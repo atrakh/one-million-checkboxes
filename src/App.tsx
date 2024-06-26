@@ -56,8 +56,23 @@ function App() {
         width: "99vw",
       }}
     >
-      <div>One Million Checkboxes</div>
-      <div>{numCheckedBoxes} boxes checked</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <div style={{ fontWeight: "bold", marginBottom: "0.25rem" }}>
+            One Million Checkboxes
+          </div>
+          <div>{numCheckedBoxes} boxes checked</div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          Powered by
+          <img src="/convex-logo.svg" width={128} />
+        </div>
+      </div>
       <div
         style={{
           width: "100%",
