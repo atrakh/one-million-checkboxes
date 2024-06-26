@@ -68,10 +68,19 @@ function App() {
           </div>
           <div>{numCheckedBoxes} boxes checked</div>
         </div>
-        <div style={{ display: "flex", alignItems: "center" }}>
+        <a
+          style={{
+            display: "flex",
+            alignItems: "center",
+            textDecoration: "none",
+            color: "black",
+          }}
+          href="https://convex.dev"
+          target="_blank"
+        >
           Powered by
           <img src="/convex-logo.svg" width={128} />
-        </div>
+        </a>
       </div>
       <div
         style={{
