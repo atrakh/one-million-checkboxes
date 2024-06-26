@@ -42,7 +42,7 @@ function App() {
 
   const [ref, { width, height }] = useMeasure<HTMLDivElement>();
 
-  const numColumns = Math.ceil((width - 80) / 24);
+  const numColumns = Math.ceil((width - 40) / 30);
   const numRows = Math.ceil(NUM_BOXES / numColumns);
 
   return (
@@ -53,7 +53,7 @@ function App() {
         flexDirection: "column",
         gap: "0.25rem",
         height: "95vh",
-        width: "95vw",
+        width: "99vw",
       }}
     >
       <div>One Million Checkboxes</div>
@@ -68,10 +68,10 @@ function App() {
       >
         <Grid
           columnCount={numColumns}
-          columnWidth={24}
+          columnWidth={30}
           height={height}
           rowCount={numRows}
-          rowHeight={24}
+          rowHeight={30}
           width={width}
           itemData={{ flattenedBoxes: boxes }}
         >
@@ -131,8 +131,8 @@ const Cell = ({
         style={{
           margin: "0.25rem",
           cursor: isLoading ? undefined : "pointer",
-          width: "16px",
-          height: "16px",
+          width: "24px",
+          height: "24px",
         }}
         type="checkbox"
         checked={isChecked}
