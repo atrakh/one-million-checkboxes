@@ -136,7 +136,6 @@ const Cell = ({
     <div
       style={{ ...style, cursor: "pointer" }}
       key={`${rowIndex}-${columnIndex}`}
-      onClick={onClick}
     >
       <input
         style={{
@@ -144,10 +143,12 @@ const Cell = ({
           cursor: isLoading ? undefined : "pointer",
           width: "24px",
           height: "24px",
+          padding: "8px",
         }}
         type="checkbox"
         checked={isChecked}
         disabled={isLoading}
+        onChange={onClick}
       />
     </div>
   );
