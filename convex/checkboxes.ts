@@ -99,7 +99,6 @@ export const toggleRandom = internalMutation({
     for (let i = 0; i < 10; i++) {
       const documentIdx = Math.floor(Math.random() * NUM_DOCUMENTS);
       const arrayIdx = Math.floor(Math.random() * 2);
-      console.log(documentIdx, arrayIdx);
       const box = await ctx.db
         .query("checkboxes")
         .withIndex("idx", (q) => q.eq("idx", documentIdx))
