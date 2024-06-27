@@ -9,7 +9,7 @@ export const get = query({
   args: { documentIdx: v.number() },
   handler: async (ctx, { documentIdx }) => {
     if (documentIdx < 0 || documentIdx >= NUM_DOCUMENTS) {
-      throw new Error("idx out of range");
+      throw new Error("documentIdx out of range");
     }
     return (
       await ctx.db
@@ -24,6 +24,12 @@ export const get = query({
 export const toggle = mutation({
   args: { documentIdx: v.number(), arrayIdx: v.number(), checked: v.boolean() },
   handler: async (ctx, { documentIdx, arrayIdx, checked }) => {
+    if (documentIdx < 0 || documentIdx >= NUM_DOCUMENTS) {
+      throw new Error("documentIdx out of range");
+    }
+    if (arrayIdx < 0 || arrayIdx >= BOXES_PER_DOCUMENT) {
+      throw new Error("arrayIdx out of range");
+    }
     const checkbox = await ctx.db
       .query("checkboxes")
       .withIndex("idx", (q) => q.eq("idx", documentIdx))
