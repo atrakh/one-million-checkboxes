@@ -1,11 +1,7 @@
 import { FixedSizeGrid as Grid } from "react-window";
 import { useMutation, useQueries } from "convex/react";
 import { api } from "../convex/_generated/api";
-import {
-  BOXES_PER_DOCUMENT,
-  NUM_BOXES,
-  NUM_DOCUMENTS,
-} from "../convex/checkboxes";
+import { NUM_BOXES, NUM_DOCUMENTS } from "../convex/checkboxes";
 import React, { useMemo } from "react";
 import { useMeasure } from "react-use";
 
@@ -97,7 +93,7 @@ function App() {
           rowCount={numRows}
           rowHeight={30}
           width={width}
-          itemData={{ flattenedBoxes: boxes }}
+          itemData={{ flattenedBoxes: boxes, numColumns, numRows }}
         >
           {Cell}
         </Grid>
@@ -115,33 +111,24 @@ const Cell = ({
   style: React.CSSProperties;
   rowIndex: number;
   columnIndex: number;
-  data: { flattenedBoxes: ArrayBuffer[] };
+  data: { flattenedBoxes: ArrayBuffer[]; numColumns: number; numRows: number };
 }) => {
-  const index = rowIndex * BOXES_PER_DOCUMENT + columnIndex;
+  const { flattenedBoxes, numColumns } = data;
+  const index = rowIndex * numColumns + columnIndex;
   const documentIdx = index % NUM_DOCUMENTS;
   const arrayIdx = Math.floor(index / NUM_DOCUMENTS);
-  const document = data.flattenedBoxes[documentIdx];
+  const document = flattenedBoxes[documentIdx];
   const view = document === undefined ? undefined : new Uint8Array(document);
   const bit = arrayIdx % 8;
-  const byte = view ? view[arrayIdx / 8] : 0;
 
-  const isChecked = !!((byte >> bit) & 1);
+  const uintIdx = Math.floor(arrayIdx / 8);
+  const byte = view ? view[uintIdx] : 0;
+  const shiftedBit = 1 << bit;
+  const isChecked = !!(shiftedBit & byte);
 
   const isLoading = view === undefined;
 
-  const toggle = useMutation(api.checkboxes.toggle).withOptimisticUpdate(
-    (localStore) => {
-      const currentValue = localStore.getQuery(api.checkboxes.get, {
-        documentIdx,
-      });
-      if (currentValue !== undefined && currentValue !== null) {
-        const view = new Uint8Array(currentValue);
-        view[arrayIdx / 8] = byte ^ (1 << bit);
-
-        localStore.setQuery(api.checkboxes.get, { documentIdx }, view);
-      }
-    }
-  );
+  const toggle = useMutation(api.checkboxes.toggle);
   const onClick = () => {
     void toggle({ documentIdx, arrayIdx, checked: !isChecked });
   };
@@ -161,7 +148,6 @@ const Cell = ({
         type="checkbox"
         checked={isChecked}
         disabled={isLoading}
-        onChange={onClick}
       />
     </div>
   );

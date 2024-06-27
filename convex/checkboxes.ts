@@ -36,14 +36,17 @@ export const toggle = mutation({
     const bytes = checkbox.boxes;
     const view = new Uint8Array(bytes);
     const bit = arrayIdx % 8;
-    const byte = view[arrayIdx / 8];
-    const bitValue = (byte >> bit) & 1;
+    const uintIdx = Math.floor(arrayIdx / 8);
+    const byte = view[uintIdx];
+    const shiftedBit = 1 << bit;
+    const isCurrentlyChecked = !!(shiftedBit & byte);
 
-    if (bitValue === (checked ? 1 : 0)) {
+    // If the bit is already in the correct state, do nothing to avoid OCC.
+    if (isCurrentlyChecked === checked) {
       return;
     }
 
-    view[arrayIdx / 8] = byte ^ (1 << bit);
+    view[uintIdx] = shiftedBit ^ byte;
 
     ctx.db.patch(checkbox._id, {
       idx: checkbox.idx,
