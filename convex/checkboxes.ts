@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, mutation, query } from "./_generated/server";
 
 export const NUM_BOXES = 1000000;
-export const BOXES_PER_DOCUMENT = 8000;
+export const BOXES_PER_DOCUMENT = 4000;
 export const NUM_DOCUMENTS = Math.floor(NUM_BOXES / BOXES_PER_DOCUMENT);
 
 export const get = query({
