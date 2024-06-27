@@ -1,7 +1,7 @@
 import { FixedSizeGrid as Grid } from "react-window";
 import { useMutation, useQueries } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { NUM_BOXES, NUM_DOCUMENTS } from "../convex/checkboxes";
+import { NUM_BOXES, NUM_DOCUMENTS, isChecked } from "../convex/checkboxes";
 import React, { useMemo } from "react";
 import { useMeasure } from "react-use";
 
@@ -119,18 +119,14 @@ const Cell = ({
   const arrayIdx = Math.floor(index / NUM_DOCUMENTS);
   const document = flattenedBoxes[documentIdx];
   const view = document === undefined ? undefined : new Uint8Array(document);
-  const bit = arrayIdx % 8;
 
-  const uintIdx = Math.floor(arrayIdx / 8);
-  const byte = view ? view[uintIdx] : 0;
-  const shiftedBit = 1 << bit;
-  const isChecked = !!(shiftedBit & byte);
+  const isCurrentlyChecked = view && isChecked(view, arrayIdx);
 
   const isLoading = view === undefined;
 
   const toggle = useMutation(api.checkboxes.toggle);
   const onClick = () => {
-    void toggle({ documentIdx, arrayIdx, checked: !isChecked });
+    void toggle({ documentIdx, arrayIdx, checked: !isCurrentlyChecked });
   };
   return (
     <div
@@ -146,7 +142,7 @@ const Cell = ({
           padding: "8px",
         }}
         type="checkbox"
-        checked={isChecked}
+        checked={isCurrentlyChecked}
         disabled={isLoading}
         onChange={onClick}
       />

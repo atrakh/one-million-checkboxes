@@ -45,7 +45,7 @@ export const toggle = mutation({
     const uintIdx = Math.floor(arrayIdx / 8);
     const byte = view[uintIdx];
     const shiftedBit = 1 << bit;
-    const isCurrentlyChecked = !!(shiftedBit & byte);
+    const isCurrentlyChecked = isChecked(view, arrayIdx);
 
     // If the bit is already in the correct state, do nothing to avoid OCC.
     if (isCurrentlyChecked === checked) {
@@ -85,3 +85,11 @@ export const seed = internalMutation({
     }
   },
 });
+
+export const isChecked = (view: Uint8Array, arrayIdx: number) => {
+  const bit = arrayIdx % 8;
+  const uintIdx = Math.floor(arrayIdx / 8);
+  const byte = view ? view[uintIdx] : 0;
+  const shiftedBit = 1 << bit;
+  return !!(shiftedBit & byte);
+};
