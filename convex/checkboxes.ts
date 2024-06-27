@@ -41,23 +41,14 @@ export const toggle = mutation({
 
     const bytes = checkbox.boxes;
     const view = new Uint8Array(bytes);
-    const bit = arrayIdx % 8;
-    const uintIdx = Math.floor(arrayIdx / 8);
-    const byte = view[uintIdx];
-    const shiftedBit = 1 << bit;
-    const isCurrentlyChecked = isChecked(view, arrayIdx);
+    const newBytes = shiftBit(view, arrayIdx, checked)?.buffer;
 
-    // If the bit is already in the correct state, do nothing to avoid OCC.
-    if (isCurrentlyChecked === checked) {
-      return;
+    if (newBytes) {
+      ctx.db.patch(checkbox._id, {
+        idx: checkbox.idx,
+        boxes: newBytes,
+      });
     }
-
-    view[uintIdx] = shiftedBit ^ byte;
-
-    ctx.db.patch(checkbox._id, {
-      idx: checkbox.idx,
-      boxes: view.buffer,
-    });
   },
 });
 
@@ -92,4 +83,24 @@ export const isChecked = (view: Uint8Array, arrayIdx: number) => {
   const byte = view ? view[uintIdx] : 0;
   const shiftedBit = 1 << bit;
   return !!(shiftedBit & byte);
+};
+
+export const shiftBit = (
+  view: Uint8Array,
+  arrayIdx: number,
+  checked: boolean
+) => {
+  const bit = arrayIdx % 8;
+  const uintIdx = Math.floor(arrayIdx / 8);
+  const byte = view[uintIdx];
+  const shiftedBit = 1 << bit;
+  const isCurrentlyChecked = isChecked(view, arrayIdx);
+
+  // If the bit is already in the correct state, do nothing to avoid OCC.
+  if (isCurrentlyChecked === checked) {
+    return;
+  }
+
+  view[uintIdx] = shiftedBit ^ byte;
+  return view;
 };
