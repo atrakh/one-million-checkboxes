@@ -15,6 +15,7 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as checkboxes from "../checkboxes.js";
+import type * as crons from "../crons.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,6 +27,7 @@ import type * as checkboxes from "../checkboxes.js";
  */
 declare const fullApi: ApiFromModules<{
   checkboxes: typeof checkboxes;
+  crons: typeof crons;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
