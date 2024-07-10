@@ -214,11 +214,18 @@ const Cell = ({
       }
     }
   );
+  if (index >= NUM_BOXES) {
+    return null;
+  }
   const onClick = () => {
     void toggle({ documentIdx, arrayIdx, checked: !isCurrentlyChecked });
   };
   return (
-    <div style={style} key={`${rowIndex}-${columnIndex}`}>
+    <div
+      style={style}
+      key={`${documentIdx}-${arrayIdx}`}
+      id={`${documentIdx}-${arrayIdx}`}
+    >
       <input
         style={{
           margin: "0.25rem",
