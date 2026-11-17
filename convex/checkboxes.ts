@@ -123,8 +123,11 @@ export const isChecked = (view: Uint8Array, arrayIdx: number) => {
   return !!(shiftedBit & byte);
 };
 
-export const shiftBit = (
-  view: Uint8Array,
+// Generic so the result keeps the view's buffer type. Since TypeScript 5.7 a
+// plain `Uint8Array` is `Uint8Array<ArrayBufferLike>`, whose `.buffer` may be a
+// SharedArrayBuffer, which `v.bytes()` (an ArrayBuffer) doesn't accept.
+export const shiftBit = <T extends Uint8Array>(
+  view: T,
   arrayIdx: number,
   checked: boolean
 ) => {
